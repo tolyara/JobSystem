@@ -3,11 +3,11 @@ import java.util.List;
 
 public class JobExecutor {
 
-    List<Job> periodicJobs = new ArrayList();
-    List<Job> oneTimeJobs = new ArrayList();
+    private List<Job> periodicJobs = new ArrayList();
+    private List<Job> oneTimeJobs = new ArrayList();
 
     public void addJob(Job job, JobType jobType) {
-        if (jobType.equals(JobType.ONE_TIME)) {
+        if (jobType.equals(JobType.SINGLE)) {
             this.oneTimeJobs.add(job);
         } else if (jobType.equals(JobType.PERIODIC)) {
             this.periodicJobs.add(job);

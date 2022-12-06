@@ -6,8 +6,8 @@ public class JobSystemMain {
         Job job1 = new Job("JOB_1");
         Job job2 = new Job("JOB_2");
 
-        executor.addJob(job1, JobType.ONE_TIME);
-        executor.addJob(job2, JobType.ONE_TIME);
+        executor.addJob(job1, JobType.SINGLE);
+        executor.addJob(job2, JobType.SINGLE);
 
         System.out.println("Starting jobs...");
         executor.startJobs();

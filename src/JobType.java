@@ -1,6 +1,5 @@
 
 public enum JobType {
-
-    ONE_TIME, PERIODIC
-
+    SINGLE,   // one time run
+    PERIODIC  // periodic execution
 }
