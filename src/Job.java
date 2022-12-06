@@ -42,7 +42,7 @@ public class Job implements Runnable {
         this.setJobState(JobState.RUNNING);
         this.setStartTime(LocalDateTime.now());
         try {
-            Thread.sleep(30_000);  // let each job last 5 seconds by default
+            Thread.sleep(30_000);  // let each job last certain amount of time by default
             this.setJobState(JobState.FINISHED);
         } catch (Exception e) {
 //            System.out.println("Job " + name + " has been failed, message - " + e.getMessage());

@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class JobExecutor {
 
@@ -10,6 +13,8 @@ public class JobExecutor {
     private List<Job> pendingJobs = new ArrayList();
 
     private final int limit = 2;  // limit on the amount of jobs that can run concurrently at any given moment
+
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(limit);
 
     public List<Job> getPeriodicJobs() {
         return periodicJobs;
@@ -35,7 +40,7 @@ public class JobExecutor {
         this.pendingJobs = pendingJobs;
     }
 
-    public void addJob(Job job, JobType jobType) {
+    public void addJob(Job job, JobType jobType, Integer delay) {
         if (job == null || jobType == null) return;
 
         int singleJobsAmount = (int) this.getSingleJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
@@ -43,14 +48,17 @@ public class JobExecutor {
         int allJobsRunningAmount = singleJobsAmount + periodicJobsAmount;
 
         if (allJobsRunningAmount >= limit) {
+            job.setJobState(JobState.PENDING);
             this.getPendingJobs().add(job);
         } else {
             if (jobType.equals(JobType.SINGLE)) {
                 this.singleJobs.add(job);
                 this.startJob(job);
-            } else if (jobType.equals(JobType.PERIODIC)) {
+            } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
+                job.setJobState(JobState.SCHEDULED);
                 this.periodicJobs.add(job);
-                this.startJob(job);
+                scheduledExecutorService.schedule(job, delay, TimeUnit.HOURS);
+//                scheduledExecutorService.shutdown();
             } else {
                 // do nothing
             }

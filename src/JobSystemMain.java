@@ -2,15 +2,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 public class JobSystemMain {
 
     public static void main(String[] args) {
         boolean programLaunched = true;
-
         JobExecutor executor = new JobExecutor();
-//        Job job1 = new Job("Default Job");
-//        executor.addJob(job1, JobType.SINGLE);
 
         while (programLaunched) {
             printJobInfo(executor);
@@ -33,9 +32,18 @@ public class JobSystemMain {
         String name = requestUserInput();
         System.out.print("Select job type (S - single, P - periodic): ");
         String type = requestUserInput();
+        JobType jobType = "P".equalsIgnoreCase(type) ? JobType.PERIODIC : JobType.SINGLE;
+        Integer delay = null;
+
+        if (JobType.PERIODIC.equals(jobType)) {
+            System.out.print("Select delay (1, 2, 6, or 12 hours):");
+            List<String> delayValues = Arrays.asList("1", "2", "6", "12");
+            String delayString = requestUserInput();
+            delay = delayString != null && delayValues.contains(delayString) ? Integer.parseInt(delayString) : 1;
+        }
 
         Job job = new Job(name);
-        executor.addJob(job, "P".equals(type) ? JobType.PERIODIC : JobType.SINGLE);
+        executor.addJob(job, jobType, delay);
     }
 
     private static String requestUserInput() {
