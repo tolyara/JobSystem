@@ -13,17 +13,12 @@ public class JobSystemMain {
 
         while (programLaunched) {
             printJobInfo(executor);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                String input = reader.readLine();
-                if ("Q".equalsIgnoreCase(input)) {
-                    programLaunched = false; // close program
-                    executor.getScheduledExecutorService().shutdownNow();
-                } else if ("A".equalsIgnoreCase(input)) {
-                    addNewJob(executor);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            String input = requestUserInput();
+            if ("Q".equalsIgnoreCase(input)) {
+                programLaunched = false; // close program
+                executor.getScheduledExecutorService().shutdownNow();
+            } else if ("A".equalsIgnoreCase(input)) {
+                addNewJob(executor);
             }
         }
     }
