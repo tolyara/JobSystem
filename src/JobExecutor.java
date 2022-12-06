@@ -4,7 +4,12 @@ import java.util.List;
 public class JobExecutor {
 
     private List<Job> periodicJobs = new ArrayList();
+
     private List<Job> singleJobs = new ArrayList();
+
+    private List<Job> pendingJobs = new ArrayList();
+
+    private final int limit = 3;
 
     public List<Job> getPeriodicJobs() {
         return periodicJobs;
@@ -22,25 +27,39 @@ public class JobExecutor {
         this.singleJobs = singleJobs;
     }
 
+    public List<Job> getPendingJobs() {
+        return pendingJobs;
+    }
+
+    public void setPendingJobs(List<Job> pendingJobs) {
+        this.pendingJobs = pendingJobs;
+    }
+
     public void addJob(Job job, JobType jobType) {
-        if (jobType.equals(JobType.SINGLE)) {
-            this.singleJobs.add(job);
-        } else if (jobType.equals(JobType.PERIODIC)) {
-            this.periodicJobs.add(job);
+        if (job == null || jobType == null) return;
+
+        int singleJobsAmount = (int) this.getSingleJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
+        int periodicJobsAmount = (int) this.getPeriodicJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
+        int allJobsRunningAmount = singleJobsAmount + periodicJobsAmount;
+
+        if (allJobsRunningAmount >= limit) {
+            this.getPendingJobs().add(job);
         } else {
-            // do nothing
+            if (jobType.equals(JobType.SINGLE)) {
+                this.singleJobs.add(job);
+                this.startJob(job);
+            } else if (jobType.equals(JobType.PERIODIC)) {
+                this.periodicJobs.add(job);
+                this.startJob(job);
+            } else {
+                // do nothing
+            }
         }
     }
 
-    public void removeJob() {
-
-    }
-
-    public void startJobs() {
-        for (Job oneTimeJob : singleJobs) {
-            Thread thread = new Thread(oneTimeJob);
-            thread.start();
-        }
+    public void startJob(Job job) {
+        Thread thread = new Thread(job);
+        thread.start();
     }
 
     public boolean isEmpty() {
