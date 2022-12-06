@@ -9,8 +9,8 @@ public class JobSystemMain {
         boolean programLaunched = true;
 
         JobExecutor executor = new JobExecutor();
-        Job job1 = new Job("Default Job");
-        executor.addJob(job1, JobType.SINGLE);
+//        Job job1 = new Job("Default Job");
+//        executor.addJob(job1, JobType.SINGLE);
 
         while (programLaunched) {
             printJobInfo(executor);
@@ -55,11 +55,30 @@ public class JobSystemMain {
         if (executor.isEmpty()) {
             System.out.println("No active jobs found");
         } else {
-            System.out.println("Single jobs (name - state - start time)");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
-            for (Job job : executor.getSingleJobs()) {
-                String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
-                System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime);
+
+            if (!executor.getSingleJobs().isEmpty()) {
+                System.out.println("SINGLE JOBS (NAME - STATE - START TIME)");
+                for (Job job : executor.getSingleJobs()) {
+                    String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
+                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime);
+                }
+            }
+
+            if (!executor.getPeriodicJobs().isEmpty()) {
+                System.out.println("PERIODIC JOBS (NAME - STATE - START TIME)");
+                for (Job job : executor.getPeriodicJobs()) {
+                    String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
+                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime);
+                }
+            }
+
+            if (!executor.getPendingJobs().isEmpty()) {
+                System.out.println("PENDING JOBS (NAME - STATE - START TIME)");
+                for (Job job : executor.getPendingJobs()) {
+                    String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
+                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime);
+                }
             }
         }
         System.out.print("Please select next action (A - add new job, Q - quit): ");

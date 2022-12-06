@@ -38,14 +38,14 @@ public class Job implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Job " + name + " has been started");
+//        System.out.println("Job " + name + " has been started");
         this.setJobState(JobState.RUNNING);
         this.setStartTime(LocalDateTime.now());
         try {
-            Thread.sleep(5000);  // let each job last 5 seconds by default
+            Thread.sleep(30_000);  // let each job last 5 seconds by default
             this.setJobState(JobState.FINISHED);
         } catch (Exception e) {
-            System.out.println("Job " + name + " has been failed, message - " + e.getMessage());
+//            System.out.println("Job " + name + " has been failed, message - " + e.getMessage());
             this.setJobState(JobState.FAILED);
         }
     }

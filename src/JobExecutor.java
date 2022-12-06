@@ -9,7 +9,7 @@ public class JobExecutor {
 
     private List<Job> pendingJobs = new ArrayList();
 
-    private final int limit = 3;
+    private final int limit = 2;  // limit on the amount of jobs that can run concurrently at any given moment
 
     public List<Job> getPeriodicJobs() {
         return periodicJobs;
