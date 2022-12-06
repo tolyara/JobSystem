@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.format.DateTimeFormatter;
 
 public class JobSystemMain {
 
@@ -55,8 +56,10 @@ public class JobSystemMain {
             System.out.println("No active jobs found");
         } else {
             System.out.println("Single jobs (name - state - start time)");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
             for (Job job : executor.getSingleJobs()) {
-                System.out.println(job.getName() + " - " + job.getJobState() + " - " + job.getStartTime());
+                String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
+                System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime);
             }
         }
         System.out.print("Please select next action (A - add new job, Q - quit): ");
