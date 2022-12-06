@@ -18,6 +18,7 @@ public class JobSystemMain {
                 String input = reader.readLine();
                 if ("Q".equalsIgnoreCase(input)) {
                     programLaunched = false; // close program
+                    executor.getScheduledExecutorService().shutdownNow();
                 } else if ("A".equalsIgnoreCase(input)) {
                     addNewJob(executor);
                 }

@@ -41,6 +41,10 @@ public class JobExecutor {
         this.pendingJobs = pendingJobs;
     }
 
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
+    }
+
     public void addJob(Job job, JobType jobType, Integer delay) {
         if (job == null || jobType == null) return;
 
