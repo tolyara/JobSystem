@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -56,6 +57,7 @@ public class JobExecutor {
                 this.startJob(job);
             } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
                 job.setJobState(JobState.SCHEDULED);
+                job.setScheduledStartTime(LocalDateTime.now().plusHours(delay));
                 this.periodicJobs.add(job);
                 scheduledExecutorService.schedule(job, delay, TimeUnit.HOURS);
 //                scheduledExecutorService.shutdown();
