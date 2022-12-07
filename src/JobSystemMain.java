@@ -38,7 +38,7 @@ public class JobSystemMain {
             delay = delayString != null && delayValues.contains(delayString) ? Integer.parseInt(delayString) : 1;
         }
 
-        Job job = new Job(name);
+        Job job = new Job(name, executor);
         executor.addJob(job, jobType, delay);
     }
 

@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 
 public class Job implements Runnable {
 
-    private String name;
+    private final String name;
 
     private JobState jobState;
 
@@ -10,12 +10,10 @@ public class Job implements Runnable {
 
     private LocalDateTime scheduledStartTime;
 
+    private final JobExecutor executor;
+
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public JobState getJobState() {
@@ -34,8 +32,9 @@ public class Job implements Runnable {
         this.startTime = startTime;
     }
 
-    public Job(String name) {
+    public Job(String name, JobExecutor executor) {
         this.name = name;
+        this.executor = executor;
     }
 
     public LocalDateTime getScheduledStartTime() {
@@ -57,6 +56,7 @@ public class Job implements Runnable {
             System.out.println("Job " + name + " has been failed, message - " + e.getMessage());
             this.setJobState(JobState.FAILED);
         }
+        executor.checkPendingJobs();
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class JobExecutor {
 
@@ -47,28 +48,30 @@ public class JobExecutor {
 
     public void addJob(Job job, JobType jobType, Integer delay) {
         if (job == null || jobType == null) return;
-
-        int singleJobsAmount = (int) this.getSingleJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
-        int periodicJobsAmount = (int) this.getPeriodicJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
-        int allJobsRunningAmount = singleJobsAmount + periodicJobsAmount;
+        int allJobsRunningAmount = this.getAllJobsRunningAmount();
 
         if (allJobsRunningAmount >= limit) {
             job.setJobState(JobState.PENDING);
             this.getPendingJobs().add(job);
         } else {
             if (jobType.equals(JobType.SINGLE)) {
-                this.singleJobs.add(job);
+                this.getSingleJobs().add(job);
                 this.startJob(job);
             } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
                 job.setJobState(JobState.SCHEDULED);
                 job.setScheduledStartTime(LocalDateTime.now().plusHours(delay));
-                this.periodicJobs.add(job);
+                this.getPeriodicJobs().add(job);
                 scheduledExecutorService.schedule(job, delay, TimeUnit.HOURS);
-//                scheduledExecutorService.shutdown();
             } else {
                 // do nothing
             }
         }
+    }
+
+    public int getAllJobsRunningAmount() {
+        int singleJobsAmount = (int) this.getSingleJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
+        int periodicJobsAmount = (int) this.getPeriodicJobs().stream().filter(j -> JobState.RUNNING.equals(j.getJobState())).count();
+        return singleJobsAmount + periodicJobsAmount;
     }
 
     public void startJob(Job job) {
@@ -78,6 +81,17 @@ public class JobExecutor {
 
     public boolean isEmpty() {
         return singleJobs.isEmpty() && periodicJobs.isEmpty();
+    }
+
+    public void checkPendingJobs() {
+        if (this.getPendingJobs().isEmpty()) return;
+        int allJobsRunningAmount = this.getAllJobsRunningAmount();
+        if (allJobsRunningAmount < limit) {
+            Job job = this.getPendingJobs().get(0);
+            this.getPendingJobs().remove(0);
+            this.getSingleJobs().add(job);
+            this.startJob(job);
+        }
     }
 
 }
