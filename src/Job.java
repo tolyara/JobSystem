@@ -47,6 +47,13 @@ public class Job implements Runnable {
 
     @Override
     public void run() {
+        int allJobsRunningAmount = executor.getAllJobsRunningAmount();
+        if (allJobsRunningAmount >= executor.getLimit()) {
+            this.setJobState(JobState.PENDING);
+            executor.getPendingJobs().add(this);
+            return;
+        }
+
         this.setJobState(JobState.RUNNING);
         this.setStartTime(LocalDateTime.now());
         try {

@@ -42,6 +42,10 @@ public class JobExecutor {
         this.pendingJobs = pendingJobs;
     }
 
+    public int getLimit() {
+        return limit;
+    }
+
     public ScheduledExecutorService getScheduledExecutorService() {
         return scheduledExecutorService;
     }
@@ -50,14 +54,8 @@ public class JobExecutor {
         if (job == null || jobType == null) return;
 
         if (jobType.equals(JobType.SINGLE)) {
-            int allJobsRunningAmount = this.getAllJobsRunningAmount();
-            if (allJobsRunningAmount >= limit) {
-                job.setJobState(JobState.PENDING);
-                this.getPendingJobs().add(job);
-            } else {
-                this.getSingleJobs().add(job);
-                this.startJob(job);
-            }
+            this.getSingleJobs().add(job);
+            this.startJob(job);
         } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
             job.setJobState(JobState.SCHEDULED);
             job.setScheduledStartTime(LocalDateTime.now().plusHours(delay));
@@ -89,7 +87,12 @@ public class JobExecutor {
         if (allJobsRunningAmount < limit) {
             Job job = this.getPendingJobs().get(0);
             this.getPendingJobs().remove(0);
-            this.getSingleJobs().add(job);
+
+            if (JobState.SCHEDULED.equals(job.getJobState())) {
+                this.getPeriodicJobs().add(job);
+            } else {
+                this.getSingleJobs().add(job);
+            }
             this.startJob(job);
         }
     }
