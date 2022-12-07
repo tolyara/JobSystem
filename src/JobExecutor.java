@@ -56,13 +56,17 @@ public class JobExecutor {
             this.getSingleJobs().add(job);
             this.startJob(job);
         } else if (job.getJobType().equals(JobType.PERIODIC) && job.getDelay() != null) {
-            job.setJobState(JobState.SCHEDULED);
-            job.setScheduledStartTime(LocalDateTime.now().plusHours(job.getDelay()));
-            this.getPeriodicJobs().add(job);
-            scheduledExecutorService.schedule(job, job.getDelay(), TimeUnit.HOURS);
+            this.addPeriodicJob(job);
         } else {
             // do nothing
         }
+    }
+
+    public void addPeriodicJob(Job job) {
+        job.setJobState(JobState.SCHEDULED);
+        job.setScheduledStartTime(LocalDateTime.now().plusHours(job.getDelay()));
+        this.getPeriodicJobs().add(job);
+        scheduledExecutorService.schedule(job, job.getDelay(), TimeUnit.HOURS);
     }
 
     public int getAllJobsRunningAmount() {

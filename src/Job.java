@@ -76,7 +76,7 @@ public class Job implements Runnable {
         this.setStartTime(LocalDateTime.now());
         if (JobType.PERIODIC.equals(this.getJobType())) {
             Job nextScheduledJob = new Job(this.name, this.executor, this.jobType, this.delay);
-            executor.addJob(nextScheduledJob);
+            executor.addPeriodicJob(nextScheduledJob);
         }
 
         try {
