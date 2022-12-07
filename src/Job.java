@@ -2,6 +2,8 @@ import java.time.LocalDateTime;
 
 public class Job implements Runnable {
 
+    private Integer id;
+
     private final String name;
 
     private JobState jobState;
@@ -15,6 +17,14 @@ public class Job implements Runnable {
     private final JobType jobType;
 
     private Integer delay;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

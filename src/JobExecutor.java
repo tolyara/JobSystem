@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JobExecutor {
 
@@ -16,6 +17,8 @@ public class JobExecutor {
     private final int limit = 2;  // limit on the amount of jobs that can run concurrently at any given moment
 
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(limit);
+
+    private AtomicInteger idCount = new AtomicInteger(0);
 
     public List<Job> getPeriodicJobs() {
         return periodicJobs;
@@ -49,10 +52,15 @@ public class JobExecutor {
         return scheduledExecutorService;
     }
 
+    private Integer generateJobId() {
+        return idCount.incrementAndGet();
+    }
+
     public void addJob(Job job) {
         if (job == null || job.getJobType() == null) return;
 
         if (job.getJobType().equals(JobType.SINGLE)) {
+            job.setId(this.generateJobId());
             this.getSingleJobs().add(job);
             this.startJob(job);
         } else if (job.getJobType().equals(JobType.PERIODIC) && job.getDelay() != null) {
@@ -63,6 +71,7 @@ public class JobExecutor {
     }
 
     public void addPeriodicJob(Job job) {
+        job.setId(this.generateJobId());
         job.setJobState(JobState.SCHEDULED);
         job.setScheduledStartTime(LocalDateTime.now().plusHours(job.getDelay()));
         this.getPeriodicJobs().add(job);

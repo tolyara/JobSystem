@@ -62,26 +62,26 @@ public class JobSystemMain {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
 
             if (!executor.getSingleJobs().isEmpty()) {
-                System.out.println("SINGLE JOBS (NAME - STATE - START TIME)");
+                System.out.println("SINGLE JOBS (ID - NAME - STATE - START TIME)");
                 for (Job job : executor.getSingleJobs()) {
                     String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
-                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime);
+                    System.out.println(job.getId() + " - "  + job.getName() + " - " + job.getJobState() + " - " + startTime);
                 }
             }
 
             if (!executor.getPeriodicJobs().isEmpty()) {
-                System.out.println("PERIODIC JOBS (NAME - STATE - START TIME - SCHEDULED START TIME)");
+                System.out.println("PERIODIC JOBS (ID - NAME - STATE - START TIME - SCHEDULED START TIME)");
                 for (Job job : executor.getPeriodicJobs()) {
                     String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
                     String scheduledStartTime = job.getScheduledStartTime() != null ? job.getScheduledStartTime().format(formatter) : "n/a";
-                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime + " - " + scheduledStartTime);
+                    System.out.println(job.getId() + " - "  + job.getName() + " - " + job.getJobState() + " - " + startTime + " - " + scheduledStartTime);
                 }
             }
 
             if (!executor.getPendingJobs().isEmpty()) {
-                System.out.println("PENDING JOBS (NAME - STATE)");
+                System.out.println("PENDING JOBS (ID - NAME - STATE)");
                 for (Job job : executor.getPendingJobs()) {
-                    System.out.println(job.getName() + " - " + job.getJobState());
+                    System.out.println(job.getId() + " - "  + job.getName() + " - " + job.getJobState());
                 }
             }
         }
