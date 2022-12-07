@@ -1,3 +1,10 @@
 /.idea/*.xml
 /out/production/JobSystem/*.class
 /*.iml
+/.idea/libraries/com_bluecatcode_junit_junit_4_11_extended_1_0_3.xml
+/out/production/JobSystem/main/Job.class
+/out/production/JobSystem/main/JobExecutor.class
+/out/test/JobSystem/JobExecutorTest.class
+/out/production/JobSystem/main/JobState.class
+/out/production/JobSystem/main/JobSystemMain.class
+/out/production/JobSystem/main/JobType.class

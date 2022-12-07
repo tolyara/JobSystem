@@ -11,7 +11,7 @@ public class JobSystemMain {
 
     public static void main(String[] args) {
         boolean programLaunched = true;
-        JobExecutor executor = new JobExecutor();
+        JobExecutor executor = new JobExecutor(2);
 
         while (programLaunched) {
             printJobInfo(executor);

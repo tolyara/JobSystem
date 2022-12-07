@@ -16,11 +16,16 @@ public class JobExecutor {
 
     private List<Job> pendingJobs = new ArrayList();
 
-    private final int limit = 2;  // limit on the amount of jobs that can run concurrently at any given moment
+    private final int limit;  // limit on the amount of jobs that can run concurrently at any given moment
 
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(limit);
+    private final ScheduledExecutorService scheduledExecutorService;
 
     private AtomicInteger idCount = new AtomicInteger(0);
+
+    public JobExecutor(int limit) {
+        this.limit = limit;
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(limit);
+    }
 
     public List<Job> getPeriodicJobs() {
         return periodicJobs;
