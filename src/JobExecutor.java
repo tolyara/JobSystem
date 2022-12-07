@@ -48,23 +48,23 @@ public class JobExecutor {
 
     public void addJob(Job job, JobType jobType, Integer delay) {
         if (job == null || jobType == null) return;
-        int allJobsRunningAmount = this.getAllJobsRunningAmount();
 
-        if (allJobsRunningAmount >= limit) {
-            job.setJobState(JobState.PENDING);
-            this.getPendingJobs().add(job);
-        } else {
-            if (jobType.equals(JobType.SINGLE)) {
+        if (jobType.equals(JobType.SINGLE)) {
+            int allJobsRunningAmount = this.getAllJobsRunningAmount();
+            if (allJobsRunningAmount >= limit) {
+                job.setJobState(JobState.PENDING);
+                this.getPendingJobs().add(job);
+            } else {
                 this.getSingleJobs().add(job);
                 this.startJob(job);
-            } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
-                job.setJobState(JobState.SCHEDULED);
-                job.setScheduledStartTime(LocalDateTime.now().plusHours(delay));
-                this.getPeriodicJobs().add(job);
-                scheduledExecutorService.schedule(job, delay, TimeUnit.HOURS);
-            } else {
-                // do nothing
             }
+        } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
+            job.setJobState(JobState.SCHEDULED);
+            job.setScheduledStartTime(LocalDateTime.now().plusHours(delay));
+            this.getPeriodicJobs().add(job);
+            scheduledExecutorService.schedule(job, delay, TimeUnit.SECONDS);
+        } else {
+            // do nothing
         }
     }
 
