@@ -38,8 +38,8 @@ public class JobSystemMain {
             delay = delayString != null && delayValues.contains(delayString) ? Integer.parseInt(delayString) : 1;
         }
 
-        Job job = new Job(name, executor);
-        executor.addJob(job, jobType, delay);
+        Job job = new Job(name, executor, jobType, delay);
+        executor.addJob(job);
     }
 
     private static String requestUserInput() {
@@ -70,10 +70,11 @@ public class JobSystemMain {
             }
 
             if (!executor.getPeriodicJobs().isEmpty()) {
-                System.out.println("PERIODIC JOBS (NAME - STATE - SCHEDULED START TIME)");
+                System.out.println("PERIODIC JOBS (NAME - STATE - START TIME - SCHEDULED START TIME)");
                 for (Job job : executor.getPeriodicJobs()) {
+                    String startTime = job.getStartTime() != null ? job.getStartTime().format(formatter) : "n/a";
                     String scheduledStartTime = job.getScheduledStartTime() != null ? job.getScheduledStartTime().format(formatter) : "n/a";
-                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + scheduledStartTime);
+                    System.out.println(job.getName() + " - " + job.getJobState() + " - " + startTime + " - " + scheduledStartTime);
                 }
             }
 

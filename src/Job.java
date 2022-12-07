@@ -12,6 +12,10 @@ public class Job implements Runnable {
 
     private final JobExecutor executor;
 
+    private final JobType jobType;
+
+    private Integer delay;
+
     public String getName() {
         return name;
     }
@@ -32,9 +36,23 @@ public class Job implements Runnable {
         this.startTime = startTime;
     }
 
-    public Job(String name, JobExecutor executor) {
+    public JobType getJobType() {
+        return jobType;
+    }
+
+    public Integer getDelay() {
+        return delay;
+    }
+
+    public void setDelay(Integer delay) {
+        this.delay = delay;
+    }
+
+    public Job(String name, JobExecutor executor, JobType jobType, Integer delay) {
         this.name = name;
         this.executor = executor;
+        this.jobType = jobType;
+        this.delay = delay;
     }
 
     public LocalDateTime getScheduledStartTime() {
@@ -56,6 +74,11 @@ public class Job implements Runnable {
 
         this.setJobState(JobState.RUNNING);
         this.setStartTime(LocalDateTime.now());
+        if (JobType.PERIODIC.equals(this.getJobType())) {
+            Job nextScheduledJob = new Job(this.name, this.executor, this.jobType, this.delay);
+            executor.addJob(nextScheduledJob);
+        }
+
         try {
             Thread.sleep(30_000);  // let each job last certain amount of time by default
             this.setJobState(JobState.FINISHED);

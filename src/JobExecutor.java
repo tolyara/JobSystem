@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class JobExecutor {
 
@@ -50,17 +49,17 @@ public class JobExecutor {
         return scheduledExecutorService;
     }
 
-    public void addJob(Job job, JobType jobType, Integer delay) {
-        if (job == null || jobType == null) return;
+    public void addJob(Job job) {
+        if (job == null || job.getJobType() == null) return;
 
-        if (jobType.equals(JobType.SINGLE)) {
+        if (job.getJobType().equals(JobType.SINGLE)) {
             this.getSingleJobs().add(job);
             this.startJob(job);
-        } else if (jobType.equals(JobType.PERIODIC) && delay != null) {
+        } else if (job.getJobType().equals(JobType.PERIODIC) && job.getDelay() != null) {
             job.setJobState(JobState.SCHEDULED);
-            job.setScheduledStartTime(LocalDateTime.now().plusHours(delay));
+            job.setScheduledStartTime(LocalDateTime.now().plusHours(job.getDelay()));
             this.getPeriodicJobs().add(job);
-            scheduledExecutorService.schedule(job, delay, TimeUnit.SECONDS);
+            scheduledExecutorService.schedule(job, job.getDelay(), TimeUnit.HOURS);
         } else {
             // do nothing
         }
